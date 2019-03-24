@@ -9,10 +9,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Class Post
  * @package App\Entity
+ * @ApiResource
  * @ORM\Table(name="tbl_posts")
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
@@ -61,6 +64,16 @@ class Post
      * @ORM\Column(name="updated_at", type="datetime", length=255, nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $author;
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="post")
+     */
+    private $comments;
     ######################################
     ######     Getters Setters      ######
     ######################################
@@ -84,7 +97,7 @@ class Post
     /**
      * @return mixed
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -100,7 +113,7 @@ class Post
     /**
      * @return string
      */
-    public function getContent(): string
+    public function getContent(): ?string
     {
         return $this->content;
     }
@@ -116,7 +129,7 @@ class Post
     /**
      * @return string
      */
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
@@ -132,7 +145,7 @@ class Post
     /**
      * @return bool
      */
-    public function isPublished(): bool
+    public function isPublished(): ?bool
     {
         return $this->published;
     }
@@ -179,6 +192,38 @@ class Post
     {
         $this->updatedAt = $updatedAt;
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param mixed $author
+     */
+    public function setAuthor($author): void
+    {
+        $this->author = $author;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param mixed $comments
+     */
+    public function setComments($comments): void
+    {
+        $this->comments = $comments;
     }
 
     ##############################################################################################
