@@ -5,10 +5,17 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Table(name="tbl_users")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ApiResource(
+ *     itemOperations={"get"},
+ *     collectionOperations={"get"},
+ *     denormalizationContext={"groups"={"default", "post", "read"}}
+ * )
  */
 class User implements UserInterface
 {
@@ -23,16 +30,25 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"default"})
      */
     private $id;
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"default"})
      */
     private $email;
     /**
      * @ORM\Column(type="string", length=128,)
+     * @Groups({"default"})
      */
     private $name;
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="birthday", type="date")
+     * @Groups({"default"})
+     */
+    private $birthday;
     /**
      * @ORM\Column(type="json")
      */
@@ -40,6 +56,7 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Groups({"read"})
      */
     private $password;
     /**
@@ -90,6 +107,22 @@ class User implements UserInterface
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getBirthday(): \DateTime
+    {
+        return $this->birthday;
+    }
+
+    /**
+     * @param \DateTime $birthday
+     */
+    public function setBirthday(\DateTime $birthday): void
+    {
+        $this->birthday = $birthday;
     }
 
     /**

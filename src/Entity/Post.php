@@ -8,6 +8,7 @@
 
 namespace App\Entity;
 
+use App\Traits\TimeTrackerTrait;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -15,13 +16,18 @@ use Symfony\Component\Validator\Constraints\DateTime;
 /**
  * Class Post
  * @package App\Entity
- * @ApiResource
+ * @ApiResource(
+ *     itemOperations={"get"},
+ *     collectionOperations={"get"},
+ *     denormalizationContext={"groups"={"post", "read"}}
+ * )
  * @ORM\Table(name="tbl_posts")
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
 class Post
 {
+    use TimeTrackerTrait;
     /**
      * @var integer|null
      * @ORM\Id
@@ -52,18 +58,6 @@ class Post
      * @ORM\Column(name="published", type="boolean", nullable=true)
      */
     private $published = false;
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", length=255, nullable=true)
-     */
-    private $createdAt;
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", length=255, nullable=true)
-     */
-    private $updatedAt;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
@@ -159,42 +153,6 @@ class Post
     }
 
     /**
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param \DateTime $createdAt
-     * @return $this
-     */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param \DateTime $updatedAt
-     * @return $this
-     */
-    public function setUpdatedAt(\DateTime $updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getAuthor()
@@ -233,17 +191,18 @@ class Post
     /**
      * @ORM\PrePersist()
      */
-    public function setCreatedDatetime()
+    public function prePersist()
     {
-        $this->setCreatedAt(new \DateTime());
+        $this->setDateCreated(new \DateTime());
+        $this->preUpdate();
     }
 
     /**
      * @ORM\PreUpdate()
      */
-    public function updateModifiedDatetime()
+    public function preUpdate()
     {
-        $this->setUpdatedAt(new \DateTime());
+        $this->setDateUpdated(new \DateTime());
     }
 
     ######################################
