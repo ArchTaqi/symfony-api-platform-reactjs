@@ -9,14 +9,27 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: email
+                property: username
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
+        api:
+            pattern: ^/api
+            stateless: true
             anonymous: true
-
+            json_login:
+                # Here authentication will happen (token generation)
+                check_path: /api/login_check
+                # Handle successfull authentication
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                # Handle authentication failure (invalid credentials, no credentials etc).
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+                    # - App\Security\TokenAuthenticator
+            # user_checker: App\Security\UserEnabledChecker
             # activate different ways to authenticate
 
             # http_basic: true

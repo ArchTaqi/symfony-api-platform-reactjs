@@ -34,6 +34,7 @@ class AppFixtures extends Fixture
         [
             'email' => 'taqi.official@gmail.com',
             'name' => 'Muhammad Taqi',
+            'username' => 'muhammadtaqi',
             'password' => 'secret123#',
             'birthday' => '1991-08-08',
             'roles' => [User::ROLE_SUPERADMIN],
@@ -41,6 +42,7 @@ class AppFixtures extends Fixture
         [
             'email' => 'turab.official@gmail.com',
             'name' => 'Muhammad Turab',
+            'username' => 'muhammadturab',
             'password' => 'secret123#',
             'birthday' => '1991-08-08',
             'roles' => [User::ROLE_ADMIN]
@@ -48,6 +50,7 @@ class AppFixtures extends Fixture
         [
             'email' => 'ali.salman@gmail.com',
             'name' => 'Ali Salman',
+            'username' => 'alisalman',
             'password' => 'secret123#',
             'birthday' => '1991-08-08',
             'roles' => [User::ROLE_WRITER]
@@ -55,6 +58,7 @@ class AppFixtures extends Fixture
         [
             'email' => 'meesum@gmail.com',
             'name' => 'Mesum Naqvi',
+            'username' => 'meesumnaqvi',
             'password' => 'secret123#',
             'birthday' => '1991-08-08',
             'roles' => [User::ROLE_WRITER]
@@ -114,7 +118,7 @@ class AppFixtures extends Fixture
     {
         foreach (self::USERS as $userFixture) {
             $user = new User();
-//            $user->setUsername($userFixture['username']);
+            $user->setUsername($userFixture['username']);
             $user->setEmail($userFixture['email']);
             $user->setName($userFixture['name']);
             $user->setBirthday(new \DateTime($userFixture['birthday']));

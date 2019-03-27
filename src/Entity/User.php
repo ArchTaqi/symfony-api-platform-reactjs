@@ -37,6 +37,12 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"default"})
      */
+    private $username;
+
+    /**
+     * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"default"})
+     */
     private $email;
     /**
      * @ORM\Column(type="string", length=128,)
@@ -112,7 +118,7 @@ class User implements UserInterface
     /**
      * @return \DateTime
      */
-    public function getBirthday(): \DateTime
+    public function getBirthday(): ?\DateTime
     {
         return $this->birthday;
     }
@@ -125,16 +131,20 @@ class User implements UserInterface
         $this->birthday = $birthday;
     }
 
+
+
     /**
-     * A visual identifier that represents this user.
-     *
      * @see UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string) $this->username;
     }
 
+    public function setUsername($username): void
+    {
+        $this->username = $username;
+    }
     /**
      * @see UserInterface
      */

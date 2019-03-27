@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints\DateTime;
  * Class Post
  * @package App\Entity
  * @ApiResource(
- *     itemOperations={"get"},
+ *     itemOperations={"get"={"access_control"="is_granted('IS_AUTHENTICATED_FULLY')"}},
  *     collectionOperations={"get"},
  *     denormalizationContext={"groups"={"post", "read"}}
  * )
