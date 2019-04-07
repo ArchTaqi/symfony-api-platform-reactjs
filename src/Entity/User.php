@@ -14,7 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     itemOperations={"get"},
  *     collectionOperations={"get"},
- *     denormalizationContext={"groups"={"default", "post", "read"}}
+ *     normalizationContext={"groups"={"read"}},
+ *     denormalizationContext={"groups"={"write"}}
  * )
  */
 class User implements UserInterface
@@ -30,39 +31,40 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"default"})
+     * @Groups({"read","post-user"})
      */
     private $id;
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"default"})
+     * @Groups({"read","post-user"})
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"default"})
+     * @Groups({"read","post-user"})
      */
     private $email;
     /**
      * @ORM\Column(type="string", length=128,)
-     * @Groups({"default"})
+     * @Groups({"read"})
      */
     private $name;
     /**
      * @var \DateTime
      * @ORM\Column(name="birthday", type="date")
-     * @Groups({"default"})
+     * @Groups({"read"})
      */
     private $birthday;
     /**
      * @ORM\Column(type="json")
+     * @Groups({"admin:read"})
      */
     private $roles = [];
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Groups({"read"})
+     *
      */
     private $password;
     /**

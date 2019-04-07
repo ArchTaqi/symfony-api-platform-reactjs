@@ -8,7 +8,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 /**
  * Class BadWord
  * @package App\Entity
- * @ApiResource
+ * @ApiResource()
  * @ORM\Table(name="tbl_bad_words")
  * @ORM\Entity(repositoryClass="App\Repository\BadWordRepository")
  */

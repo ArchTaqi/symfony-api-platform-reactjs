@@ -10,7 +10,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
  * ORM\Table(name="tbl_likes", indexes={ORM\Index(name="user_post_udx", columns={"user_id, post_id"})})
  * Class Like
  * @package App\Entity
- * @ApiResource
+ * @ApiResource()
  * @ORM\Table(name="tbl_likes")
  * @ORM\Entity(repositoryClass="App\Repository\LikeRepository")
  * @ORM\HasLifecycleCallbacks()

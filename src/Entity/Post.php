@@ -11,63 +11,82 @@ namespace App\Entity;
 use App\Traits\TimeTrackerTrait;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Symfony\Component\Validator\Constraints\DateTime;
+use App\Entity\Interfaces\AuthoredEntityInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Class Post
  * @package App\Entity
- * @ApiResource(
- *     itemOperations={"get"={"access_control"="is_granted('IS_AUTHENTICATED_FULLY')"}},
- *     collectionOperations={"get"},
- *     denormalizationContext={"groups"={"post", "read"}}
+ * @ApiResource(routePrefix="/v1",
+ *     itemOperations={
+ *          "get"={"method"="GET", "path"="/posts/{id}", "requirements"={"id"="\d+"}, "defaults"={"color"="brown"}, "options"={"my_option"="my_option_value"}, "access_control"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')"},
+ *         "put"={"method"="PUT", "path"="/posts/{id}/update", "hydra_context"={"foo"="bar"}, "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object.getAuthor() === user"},
+ *      },
+ *      collectionOperations={
+ *          "get"={"method"="GET", "path"="/posts"},
+ *          "post"={"access_control"="is_granted('IS_AUTHENTICATED_FULLY')"}
+ *     },
+ *     normalizationContext={"groups"={"read", "post-user"}},
+ *     denormalizationContext={"post"={"access_control"="is_granted('IS_AUTHENTICATED_FULLY')"}, "read"}
  * )
  * @ORM\Table(name="tbl_posts")
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class Post
+class Post implements AuthoredEntityInterface
 {
     use TimeTrackerTrait;
+
     /**
      * @var integer|null
      * @ORM\Id
      * @ORM\Column(name="id", type="integer", options={"unsigned": true})
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"read"})
      */
     protected $id;
-
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read"})
      */
     private $title;
     /**
      * @var string
      *
      * @ORM\Column(name="content", type="text", nullable=true)
+     * @Groups({"read"})
      */
     private $content;
     /**
      * @var string
      *
      * @ORM\Column(name="slug", type="string", length=1024, nullable=true)
+     * @Groups({"read"})
      */
     private $slug;
     /**
      * @var boolean
      *
      * @ORM\Column(name="published", type="boolean", nullable=true)
+     * @Groups({"read"})
      */
     private $published = false;
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
+     * @ApiSubresource()
+     * @Groups("post-user")
      */
     private $author;
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="post")
+     * @ApiSubresource()
      */
     private $comments;
+
     ######################################
     ######     Getters Setters      ######
     ######################################
@@ -153,19 +172,21 @@ class Post
     }
 
     /**
-     * @return mixed
+     * @return User
      */
-    public function getAuthor()
+    public function getAuthor(): ?User
     {
         return $this->author;
     }
 
     /**
-     * @param mixed $author
+     * @param UserInterface $author
+     * @return AuthoredEntityInterface
      */
-    public function setAuthor($author): void
+    public function setAuthor(UserInterface $author): AuthoredEntityInterface
     {
         $this->author = $author;
+        return $this;
     }
 
     /**
