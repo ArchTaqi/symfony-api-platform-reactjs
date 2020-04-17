@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -75,6 +76,15 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="author")
      */
     private $comments;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Contacts", mappedBy="user", cascade={"persist"})
+     * @ApiSubresource()
+     */
+    private $contacts;
+
+
+
 
     ######################################
     ######     Getters Setters      ######
@@ -238,6 +248,7 @@ class User implements UserInterface
     {
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->contacts = new ArrayCollection();
         $this->roles = self::DEFAULT_ROLES;
     }
     /**
